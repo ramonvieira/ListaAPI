@@ -1,7 +1,4 @@
 
-<old_str>
-</old_str>
-<new_str>
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
@@ -19,4 +16,3 @@ function App() {
 }
 
 export default App;
-</new_str>
