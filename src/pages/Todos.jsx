@@ -171,7 +171,30 @@ function Todos() {
                 p: 2
               }}
             >
-              <Typography variant="h6" sx={{ mb: 2 }}>{board.title}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 1 }}>
+                <TextField
+                  size="small"
+                  defaultValue={board.title}
+                  onBlur={(e) => {
+                    const newTitle = e.target.value.trim();
+                    if (newTitle && newTitle !== board.title) {
+                      setBoards({
+                        ...boards,
+                        [boardId]: {
+                          ...board,
+                          title: newTitle
+                        }
+                      });
+                    }
+                  }}
+                  sx={{ 
+                    '& .MuiInputBase-input': {
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem'
+                    }
+                  }}
+                />
+              </Box>
               <Droppable droppableId={boardId}>
                 {(provided) => (
                   <Box
