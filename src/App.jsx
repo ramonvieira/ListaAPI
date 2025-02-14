@@ -1,19 +1,22 @@
 
+<old_str>
+</old_str>
+<new_str>
 import React from 'react';
-import { ThemeProvider, CssBaseline } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
-import Layout from './components/Layout';
+import { ThemeProvider } from '@mui/material';
 import theme from './theme';
+import Layout from './components/Layout';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
         <Layout />
-      </BrowserRouter>
-    </ThemeProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
 export default App;
+</new_str>

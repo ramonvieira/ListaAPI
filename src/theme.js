@@ -1,4 +1,7 @@
 
+<old_str>
+</old_str>
+<new_str>
 import { createTheme } from '@mui/material';
 
 const theme = createTheme({
@@ -13,3 +16,4 @@ const theme = createTheme({
 });
 
 export default theme;
+</new_str>
