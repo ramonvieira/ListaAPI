@@ -5,41 +5,56 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import axios from 'axios';
 
 const columns = {
+  backlog: {
+    title: 'Backlog',
+    items: [],
+    color: '#e3f2fd'
+  },
   todo: {
     title: 'To Do',
-    items: []
+    items: [],
+    color: '#fff3e0'
   },
   inProgress: {
     title: 'In Progress',
-    items: []
+    items: [],
+    color: '#e8f5e9'
+  },
+  review: {
+    title: 'In Review',
+    items: [],
+    color: '#f3e5f5'
+  },
+  testing: {
+    title: 'Testing',
+    items: [],
+    color: '#fce4ec'
   },
   done: {
     title: 'Done',
-    items: []
+    items: [],
+    color: '#e0f2f1'
   }
 };
 
 function Todos() {
   const [boards, setBoards] = useState(columns);
   const [newTask, setNewTask] = useState('');
+  const [newStatus, setNewStatus] = useState('');
+  const [newStatusTitle, setNewStatusTitle] = useState('');
 
   useEffect(() => {
     const fetchTodos = async () => {
       const response = await axios.get('https://jsonplaceholder.typicode.com/todos');
-      const initialBoards = {
-        todo: {
-          title: 'To Do',
-          items: response.data.filter(todo => !todo.completed).slice(0, 5)
-        },
-        inProgress: {
-          title: 'In Progress',
-          items: response.data.filter(todo => !todo.completed).slice(5, 10)
-        },
-        done: {
-          title: 'Done',
-          items: response.data.filter(todo => todo.completed).slice(0, 5)
-        }
-      };
+      const initialBoards = { ...columns };
+      const data = response.data.slice(0, 30);
+      
+      data.forEach((todo, index) => {
+        const position = index % 6;
+        const board = Object.keys(initialBoards)[position];
+        initialBoards[board].items.push(todo);
+      });
+
       setBoards(initialBoards);
     };
     fetchTodos();
@@ -84,12 +99,28 @@ function Todos() {
 
     setBoards({
       ...boards,
-      todo: {
-        ...boards.todo,
-        items: [task, ...boards.todo.items]
+      backlog: {
+        ...boards.backlog,
+        items: [task, ...boards.backlog.items]
       }
     });
     setNewTask('');
+  };
+
+  const addNewStatus = () => {
+    if (!newStatus || !newStatusTitle) return;
+    
+    setBoards({
+      ...boards,
+      [newStatus]: {
+        title: newStatusTitle,
+        items: [],
+        color: '#f5f5f5'
+      }
+    });
+    
+    setNewStatus('');
+    setNewStatusTitle('');
   };
 
   return (
@@ -107,6 +138,24 @@ function Todos() {
         />
         <Button variant="contained" onClick={addNewTask}>
           Add Task
+        </Button>
+      </Box>
+
+      <Box sx={{ mb: 4, display: 'flex', gap: 2 }}>
+        <TextField
+          placeholder="Status Key (no spaces)"
+          value={newStatus}
+          onChange={(e) => setNewStatus(e.target.value.replace(/\s/g, ''))}
+          size="small"
+        />
+        <TextField
+          placeholder="Status Title"
+          value={newStatusTitle}
+          onChange={(e) => setNewStatusTitle(e.target.value)}
+          size="small"
+        />
+        <Button variant="outlined" onClick={addNewStatus}>
+          Add Status
         </Button>
       </Box>
 
@@ -141,7 +190,18 @@ function Todos() {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            sx={{ p: 2, mb: 2, bgcolor: 'background.paper' }}
+                            sx={{
+                              p: 2,
+                              mb: 2,
+                              bgcolor: board.color,
+                              borderRadius: 2,
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                              '&:hover': {
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                                transform: 'translateY(-2px)',
+                              },
+                              transition: 'all 0.2s ease-in-out'
+                            }}
                           >
                             <Typography>{item.title}</Typography>
                           </Paper>
