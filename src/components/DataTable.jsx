@@ -1,55 +1,35 @@
-
 import React, { useState } from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, IconButton, TextField, Box, TableSortLabel
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Box } from '@mui/material';
 
-function DataTable({ columns, data, onEdit, onDelete, filters }) {
-  const [orderBy, setOrderBy] = useState('');
-  const [order, setOrder] = useState('asc');
+function DataTable({ columns, data, filters }) {
   const [filterValues, setFilterValues] = useState({});
 
-  const handleSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const handleFilterChange = (column, value) => {
-    setFilterValues(prev => ({ ...prev, [column]: value }));
-  };
-
-  const filteredData = data.filter(row => {
-    return Object.entries(filterValues).every(([column, value]) => {
-      if (!value) return true;
-      return String(row[column]).toLowerCase().includes(value.toLowerCase());
+  const handleFilterChange = (column) => (event) => {
+    setFilterValues({
+      ...filterValues,
+      [column]: event.target.value.toLowerCase(),
     });
-  });
+  };
 
-  const sortedData = orderBy
-    ? [...filteredData].sort((a, b) => {
-        const aValue = a[orderBy];
-        const bValue = b[orderBy];
-        if (order === 'asc') {
-          return aValue > bValue ? 1 : -1;
-        }
-        return aValue < bValue ? 1 : -1;
-      })
-    : filteredData;
+  const filteredData = data.filter((item) => {
+    return filters.every(
+      (column) =>
+        !filterValues[column] ||
+        String(item[column]).toLowerCase().includes(filterValues[column])
+    );
+  });
 
   return (
     <Box>
-      <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
-        {filters.map(column => (
+      <Box sx={{ mb: 2 }}>
+        {filters.map((column) => (
           <TextField
             key={column}
             label={`Filter by ${column}`}
-            value={filterValues[column] || ''}
-            onChange={(e) => handleFilterChange(column, e.target.value)}
+            variant="outlined"
             size="small"
+            onChange={handleFilterChange(column)}
+            sx={{ mr: 2, mb: 2 }}
           />
         ))}
       </Box>
@@ -57,34 +37,21 @@ function DataTable({ columns, data, onEdit, onDelete, filters }) {
         <Table>
           <TableHead>
             <TableRow>
-              {columns.map(column => (
-                <TableCell key={column}>
-                  <TableSortLabel
-                    active={orderBy === column}
-                    direction={orderBy === column ? order : 'asc'}
-                    onClick={() => handleSort(column)}
-                  >
-                    {column}
-                  </TableSortLabel>
-                </TableCell>
+              {columns.map((column) => (
+                <TableCell key={column}>{column}</TableCell>
               ))}
-              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedData.map((row) => (
+            {filteredData.map((row) => (
               <TableRow key={row.id}>
-                {columns.map(column => (
-                  <TableCell key={column}>{row[column]}</TableCell>
+                {columns.map((column) => (
+                  <TableCell key={column}>
+                    {typeof row[column] === 'boolean'
+                      ? row[column].toString()
+                      : row[column]}
+                  </TableCell>
                 ))}
-                <TableCell>
-                  <IconButton onClick={() => onEdit(row)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => onDelete(row.id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
               </TableRow>
             ))}
           </TableBody>

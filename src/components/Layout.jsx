@@ -1,25 +1,22 @@
 
 import React, { useState } from 'react';
-import { 
-  AppBar, Toolbar, Drawer, List, ListItem, ListItemText, 
-  ListItemIcon, Typography, Box, IconButton 
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import { Routes, Route, Link } from 'react-router-dom';
+import { Box, AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import Users from '../pages/Users';
 import Posts from '../pages/Posts';
 import Comments from '../pages/Comments';
 import Albums from '../pages/Albums';
 import Photos from '../pages/Photos';
 import Todos from '../pages/Todos';
-import Users from '../pages/Users';
 
 const menuItems = [
-  { text: 'Posts', path: '/', component: Posts },
+  { text: 'Users', path: '/', component: Users },
+  { text: 'Posts', path: '/posts', component: Posts },
   { text: 'Comments', path: '/comments', component: Comments },
   { text: 'Albums', path: '/albums', component: Albums },
   { text: 'Photos', path: '/photos', component: Photos },
   { text: 'Todos', path: '/todos', component: Todos },
-  { text: 'Users', path: '/users', component: Users },
 ];
 
 function Layout() {
