@@ -26,3 +26,7 @@ author = 39640504
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx vite"
+
+[[ports]]
+localPort = 5173
+externalPort = 80
